@@ -3,43 +3,46 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
 import { jwtDecode } from "jwt-decode";
+import api from "../config/api";
 
 const LandingPage = () => {
   const { user, accessToken } = useAuth();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [elections, setElections] = useState([]);
   // const [user, setUser] = useState({
   //   name: "John Doe",
   //   avatar: "https://i.pravatar.cc/100",
   // });
-
-  const elections = [
-    {
-      id: 1,
-      title: "Presidential Election 2025",
-      description: "Vote for the next national leader",
-    },
-    {
-      id: 2,
-      title: "Student Council Election",
-      description: "Choose your representatives",
-    },
-  ];
+  const fetchElections = async () => {
+    setLoading(true);
+    try {
+      const res = await api.get(`/elect/`);
+      setElections(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
-    if (accessToken) {
-      try {
-        const decoded = jwtDecode(accessToken);
-        const now = Date.now() / 1000; // current time in seconds
-        if (decoded.exp > now) setIsLoggedIn(true);
-        else setIsLoggedIn(false);
-      } catch (err) {
-        console.error("Invalid token:", err);
-        setIsLoggedIn(false);
-      }
-    } else {
-      setIsLoggedIn(false);
-    }
-  }, [accessToken]);
+    fetchElections();
+  }, []);
+
+  // useEffect(() => {
+  //   if (accessToken) {
+  //     try {
+  //       const decoded = jwtDecode(accessToken);
+  //       const now = Date.now() / 1000;
+  //       if (decoded.exp > now) setIsLoggedIn(true);
+  //       else setIsLoggedIn(false);
+  //     } catch (err) {
+  //       console.error("Invalid token:", err);
+  //       setIsLoggedIn(false);
+  //     }
+  //   } else {
+  //     setIsLoggedIn(false);
+  //   }
+  // }, [accessToken]);
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-50 to-white">
@@ -91,10 +94,15 @@ const LandingPage = () => {
           transition={{ delay: 1, duration: 0.5 }}
         >
           {/* Profile / Auth Buttons */}
-          {isLoggedIn && user ? (
-            <span className="text-gray-700 font-semibold">
-              Welcome, {user.name}!
-            </span>
+          {user ? (
+            <motion.h2
+              className="text-xl md:text-6xl font-extrabold text-blue-700 leading-tight"
+              initial={{ opacity: 0, y: -50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1 }}
+            >
+              Welcome {user.name}!
+            </motion.h2>
           ) : (
             <div className="flex gap-4">
               <Link
@@ -122,14 +130,37 @@ const LandingPage = () => {
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {elections.map((e) => (
             <motion.div
-              key={e.id}
+              key={e._id}
               className="bg-white shadow-lg rounded-2xl p-6 hover:shadow-2xl transition transform hover:-translate-y-2"
               whileHover={{ scale: 1.03 }}
             >
-              <h4 className="text-xl font-bold text-blue-600">{e.title}</h4>
+              <div className="flex items-center justify-between">
+                <h4 className="text-xl font-bold text-blue-600">{e.title}</h4>
+
+                {/* Status Icon */}
+
+                <motion.span
+                  className={`relative flex h-3 w-3`}
+                  initial={{ scale: 0.8 }}
+                  animate={{ scale: [1, 1.3, 1] }}
+                  transition={{ repeat: Infinity, duration: 1.5 }}
+                >
+                  <span
+                    className={`absolute inline-flex h-full w-full rounded-full ${
+                      e.isActive ? "bg-green-400" : "bg-red-400"
+                    } opacity-75`}
+                  />
+                  <span
+                    className={`relative inline-flex rounded-full h-3 w-3 ${
+                      e.isActive ? "bg-green-600" : "bg-red-600"
+                    }`}
+                  />
+                </motion.span>
+              </div>
+
               <p className="mt-2 text-gray-600">{e.description}</p>
               <Link
-                to={`/election/${e.id}`}
+                to={`/election/${e._id}`}
                 className="inline-block mt-4 px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
               >
                 View Candidates

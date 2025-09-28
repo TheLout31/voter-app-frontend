@@ -3,18 +3,19 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
+import ElectionDetails from "./pages/ElectionDetails";
 
 function App() {
   return (
     <Routes>
       {/* Public Routes */}
       <Route path="/" element={<LandingPage />} />
-      <Route path="/login" element={<LoginPage/>} />
+      <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
 
       {/* User Routes */}
-      {/* <Route path="/profile" element={<Profile />} />
-        <Route path="/election/:id" element={<ElectionPage />} /> */}
+      {/* <Route path="/profile" element={<Profile />} /> */}
+      <Route path="/election/:id" element={<ElectionDetails />} />
 
       {/* Admin Routes */}
       {/* <Route path="/admin" element={<AdminPanel />} /> */}

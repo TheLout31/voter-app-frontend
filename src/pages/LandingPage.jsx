@@ -2,18 +2,16 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
-import { jwtDecode } from "jwt-decode";
 import api from "../config/api";
+import { useNavigate } from "react-router-dom";
 
 const LandingPage = () => {
   const { user, accessToken } = useAuth();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(false);
   const [elections, setElections] = useState([]);
-  // const [user, setUser] = useState({
-  //   name: "John Doe",
-  //   avatar: "https://i.pravatar.cc/100",
-  // });
+  const navigate = useNavigate();
+
   const fetchElections = async () => {
     setLoading(true);
     try {
@@ -27,22 +25,6 @@ const LandingPage = () => {
   useEffect(() => {
     fetchElections();
   }, []);
-
-  // useEffect(() => {
-  //   if (accessToken) {
-  //     try {
-  //       const decoded = jwtDecode(accessToken);
-  //       const now = Date.now() / 1000;
-  //       if (decoded.exp > now) setIsLoggedIn(true);
-  //       else setIsLoggedIn(false);
-  //     } catch (err) {
-  //       console.error("Invalid token:", err);
-  //       setIsLoggedIn(false);
-  //     }
-  //   } else {
-  //     setIsLoggedIn(false);
-  //   }
-  // }, [accessToken]);
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-50 to-white">
@@ -105,18 +87,18 @@ const LandingPage = () => {
             </motion.h2>
           ) : (
             <div className="flex gap-4">
-              <Link
-                to="/login"
+              <button
+                onClick={() => navigate("/login")}
                 className="px-8 py-3 bg-blue-600 text-white rounded-xl shadow-lg hover:bg-blue-700 transform hover:scale-105 transition"
               >
                 Login
-              </Link>
-              <Link
-                to="/register"
+              </button>
+              <button
+                onClick={() => navigate("/register")}
                 className="px-8 py-3 bg-gray-200 text-gray-800 rounded-xl shadow-lg hover:bg-gray-300 transform hover:scale-105 transition"
               >
                 Register
-              </Link>
+              </button>
             </div>
           )}
         </motion.div>

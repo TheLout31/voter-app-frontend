@@ -1,7 +1,8 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode"; 
+import { jwtDecode } from "jwt-decode";
 import api from "../config/api";
+import toast from "react-hot-toast";
 
 const AuthContext = createContext();
 
@@ -18,9 +19,6 @@ export const AuthProvider = ({ children }) => {
     localStorage.getItem("refreshToken") || null
   );
 
-
-
-
   const login = async (email, password) => {
     try {
       const response = await api.post("/auth/login", { email, password });
@@ -32,21 +30,22 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
       localStorage.setItem("user", JSON.stringify(user));
-
+      toast.success("Login Successfull!!");
       navigate("/");
     } catch (err) {
       console.error("Login failed:", err);
-      alert("Login failed. Please check your credentials.");
+      toast.error("Login failed. Please check your credentials.");
     }
   };
 
   const register = async (formData) => {
     try {
       await api.post("/auth/register", formData);
+      toast.success("Register Successfull!!");
       navigate("/login");
     } catch (error) {
       console.error("Registration Failed:", error);
-      alert("Registration failed. Please try again.");
+      toast.error("Registration failed. Please try again.!");
     }
   };
 
@@ -57,6 +56,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("user");
     navigate("/");
+    toast.success("Logout Successfull!!");
   };
 
   return (

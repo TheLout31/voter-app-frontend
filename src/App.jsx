@@ -6,31 +6,35 @@ import LoginPage from "./pages/LoginPage";
 import ElectionDetails from "./pages/ElectionDetails";
 import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
-    <Routes>
-      {/* Public Routes */}
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
-      <Route path="/about" element={<AboutPage />} />
-      <Route path="/contact" element={<ContactPage />} />
+    <>
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/contact" element={<ContactPage />} />
 
-      {/* User Routes */}
-      {/* <Route path="/profile" element={<Profile />} /> */}
-      <Route path="/election/:id" element={<ElectionDetails />} />
+        {/* User Routes */}
+        {/* <Route path="/profile" element={<Profile />} /> */}
+        <Route path="/election/:id" element={<ElectionDetails />} />
 
-      {/* Fallback - 404 */}
-      <Route
-        path="*"
-        element={
-          <h1 className="text-center mt-20 text-2xl text-red-600">
-            404 - Page Not Found
-          </h1>
-        }
-      />
-    </Routes>
+        {/* Fallback - 404 */}
+        <Route
+          path="*"
+          element={
+            <h1 className="text-center mt-20 text-2xl text-red-600">
+              404 - Page Not Found
+            </h1>
+          }
+        />
+      </Routes>
+      <Toaster position="top-right" reverseOrder={false} />
+    </>
   );
 }
 

@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
 import api from "../config/api";
-import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const LandingPage = () => {
   const { user, accessToken } = useAuth();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(false);
   const [elections, setElections] = useState([]);
   const navigate = useNavigate();
@@ -17,8 +16,17 @@ const LandingPage = () => {
     try {
       const res = await api.get(`/elect/`);
       setElections(res.data);
+
+      if (res.data.length === 0) {
+        toast("No ongoing elections right now!", {
+          icon: "🗳️",
+        });
+      }
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      toast.error("Failed to fetch elections. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -50,7 +58,7 @@ const LandingPage = () => {
         </div>
       </nav>
 
-      {/* Hero Section */}
+      {/* Hero */}
       <section className="flex flex-col items-center text-center mt-20 px-6">
         <motion.h2
           className="text-5xl md:text-6xl font-extrabold text-gray-900 leading-tight"
@@ -69,13 +77,14 @@ const LandingPage = () => {
         >
           Participate in elections and make your vote count with VoteNow.
         </motion.p>
+
+        {/* Auth Buttons */}
         <motion.div
           className="mt-8 flex gap-4"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 1, duration: 0.5 }}
         >
-          {/* Profile / Auth Buttons */}
           {user && accessToken ? (
             <motion.h2
               className="text-xl md:text-6xl font-extrabold text-blue-700 leading-tight"
@@ -104,52 +113,69 @@ const LandingPage = () => {
         </motion.div>
       </section>
 
-      {/* Elections Section */}
+      {/* Elections */}
       <section className="mt-32 px-6 lg:px-20">
         <h3 className="text-3xl font-semibold text-gray-800 mb-8">
           Ongoing Elections
         </h3>
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {elections.map((e) => (
-            <motion.div
-              key={e._id}
-              className="bg-white shadow-lg rounded-2xl p-6 hover:shadow-2xl transition transform hover:-translate-y-2"
-              whileHover={{ scale: 1.03 }}
-            >
-              <div className="flex items-center justify-between">
-                <h4 className="text-xl font-bold text-blue-600">{e.title}</h4>
 
-                {/* Status Icon */}
-
-                <motion.span
-                  className={`relative flex h-3 w-3`}
-                  initial={{ scale: 0.8 }}
-                  animate={{ scale: [1, 1.3, 1] }}
-                  transition={{ repeat: Infinity, duration: 1.5 }}
-                >
-                  <span
-                    className={`absolute inline-flex h-full w-full rounded-full ${
-                      e.isActive ? "bg-green-400" : "bg-red-400"
-                    } opacity-75`}
-                  />
-                  <span
-                    className={`relative inline-flex rounded-full h-3 w-3 ${
-                      e.isActive ? "bg-green-600" : "bg-red-600"
-                    }`}
-                  />
-                </motion.span>
-              </div>
-
-              <p className="mt-2 text-gray-600">{e.description}</p>
-              <Link
-                to={`/election/${e._id}`}
-                className="inline-block mt-4 px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+        {loading ? (
+          <p className="text-gray-500">Loading elections...</p>
+        ) : elections.length === 0 ? (
+          <motion.div
+            className="p-10 text-center bg-gray-50 rounded-2xl shadow-md"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            <h4 className="text-2xl font-bold text-gray-700">
+              No elections available 🎉
+            </h4>
+            <p className="mt-2 text-gray-500">
+              Please check back later or explore other features!
+            </p>
+          </motion.div>
+        ) : (
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {elections.map((e) => (
+              <motion.div
+                key={e._id}
+                className="bg-white shadow-lg rounded-2xl p-6 hover:shadow-2xl transition transform hover:-translate-y-2"
+                whileHover={{ scale: 1.03 }}
               >
-                View Candidates
-              </Link>
-            </motion.div>
-          ))}
-        </div>
+                <div className="flex items-center justify-between">
+                  <h4 className="text-xl font-bold text-blue-600">{e.title}</h4>
+
+                  {/* Status Icon */}
+                  <motion.span
+                    className={`relative flex h-3 w-3`}
+                    initial={{ scale: 0.8 }}
+                    animate={{ scale: [1, 1.3, 1] }}
+                    transition={{ repeat: Infinity, duration: 1.5 }}
+                  >
+                    <span
+                      className={`absolute inline-flex h-full w-full rounded-full ${
+                        e.isActive ? "bg-green-400" : "bg-red-400"
+                      } opacity-75`}
+                    />
+                    <span
+                      className={`relative inline-flex rounded-full h-3 w-3 ${
+                        e.isActive ? "bg-green-600" : "bg-red-600"
+                      }`}
+                    />
+                  </motion.span>
+                </div>
+
+                <p className="mt-2 text-gray-600">{e.description}</p>
+                <Link
+                  to={`/election/${e._id}`}
+                  className="inline-block mt-4 px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                >
+                  View Candidates
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        )}
       </section>
 
       {/* Footer */}

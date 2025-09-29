@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import api from "../config/api";
+import toast from "react-hot-toast";
 
 const ElectionDetails = () => {
   const { id } = useParams(); // get election id from route
@@ -27,8 +28,7 @@ const ElectionDetails = () => {
     setButtonLoading(true);
     try {
       const response = await api.post(`/vote/${id}`, { candidateId });
-      console.log("Voted successfully:", response.data);
-
+      toast.success("Voted successfully");
       // Refresh election details after voting
       await fetchElection();
     } catch (error) {
@@ -36,6 +36,7 @@ const ElectionDetails = () => {
         "Error Casting Vote:",
         error.response?.data || error.message
       );
+      toast.error(error.response?.data || error.message);
     } finally {
       setButtonLoading(false);
     }

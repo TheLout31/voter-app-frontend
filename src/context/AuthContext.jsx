@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode"; // ✅ Import this
+import { jwtDecode } from "jwt-decode"; 
 import api from "../config/api";
 
 const AuthContext = createContext();
@@ -14,27 +14,12 @@ export const AuthProvider = ({ children }) => {
     localStorage.getItem("accessToken") || null
   );
 
-  // Decode token if present
-  useEffect(() => {
-    if (accessToken) {
-      try {
-        const decoded = jwtDecode(accessToken);
-        if (decoded?.exp * 1000 > Date.now()) {
-          setUser((prev) => prev || {   
-            id: decoded.id,
-            email: decoded.email,
-            name: decoded.name,
-            role: decoded.role,
-          });
-        } else {
-          logout();
-        }
-      } catch (err) {
-        console.error("Invalid token", err);
-        logout();
-      }
-    }
-  }, [accessToken]);
+  const [refreshToken, setrefreshToken] = useState(
+    localStorage.getItem("refreshToken") || null
+  );
+
+
+
 
   const login = async (email, password) => {
     try {

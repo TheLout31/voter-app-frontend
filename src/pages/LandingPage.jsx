@@ -76,7 +76,7 @@ const LandingPage = () => {
           transition={{ delay: 1, duration: 0.5 }}
         >
           {/* Profile / Auth Buttons */}
-          {user ? (
+          {user && accessToken ? (
             <motion.h2
               className="text-xl md:text-6xl font-extrabold text-blue-700 leading-tight"
               initial={{ opacity: 0, y: -50 }}

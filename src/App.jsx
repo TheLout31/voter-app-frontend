@@ -4,6 +4,8 @@ import LandingPage from "./pages/LandingPage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import ElectionDetails from "./pages/ElectionDetails";
+import AboutPage from "./pages/AboutPage";
+import ContactPage from "./pages/ContactPage";
 
 function App() {
   return (
@@ -12,13 +14,12 @@ function App() {
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route path="/about" element={<AboutPage />} />
+      <Route path="/contact" element={<ContactPage />} />
 
       {/* User Routes */}
       {/* <Route path="/profile" element={<Profile />} /> */}
       <Route path="/election/:id" element={<ElectionDetails />} />
-
-      {/* Admin Routes */}
-      {/* <Route path="/admin" element={<AdminPanel />} /> */}
 
       {/* Fallback - 404 */}
       <Route

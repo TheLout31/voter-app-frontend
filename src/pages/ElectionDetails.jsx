@@ -36,7 +36,7 @@ const ElectionDetails = () => {
         "Error Casting Vote:",
         error.response?.data || error.message
       );
-      toast.error(error.response?.data || error.message);
+      toast.error( error.response?.data.error);
     } finally {
       setButtonLoading(false);
     }

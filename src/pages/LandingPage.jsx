@@ -166,12 +166,21 @@ const LandingPage = () => {
                 </div>
 
                 <p className="mt-2 text-gray-600">{e.description}</p>
-                <Link
-                  to={`/election/${e._id}`}
-                  className="inline-block mt-4 px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-                >
-                  View Candidates
-                </Link>
+                {user && accessToken ? (
+                  <button
+                    onClick={() => navigate(`/election/${e._id}`)}
+                    className="inline-block mt-4 px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                  >
+                    View Candidates
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => navigate("/login")}
+                    className="inline-block mt-4 px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                  >
+                    Login to Vote
+                  </button>
+                )}
               </motion.div>
             ))}
           </div>

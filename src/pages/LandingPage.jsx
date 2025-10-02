@@ -23,7 +23,6 @@ const LandingPage = () => {
         });
       }
     } catch (error) {
-      console.error(error);
       toast.error("Failed to fetch elections. Please try again.");
     } finally {
       setLoading(false);
@@ -165,7 +164,7 @@ const LandingPage = () => {
                   </motion.span>
                 </div>
 
-                <p className="mt-2 text-gray-600">{e.description}</p>
+                <p className="mt-2 text-gray-600">{e.description}</p> 
                 {user && accessToken ? (
                   <button
                     onClick={() => navigate(`/election/${e._id}`)}

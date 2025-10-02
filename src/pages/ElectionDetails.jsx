@@ -1,12 +1,12 @@
 import { useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import api from "../config/api";
 import toast from "react-hot-toast";
+import { PieChart } from "@mui/x-charts/PieChart";
 
 const ElectionDetails = () => {
-  const { id } = useParams(); // get election id from route
+  const { id } = useParams();
   const [election, setElection] = useState(null);
   const [buttonLoading, setButtonLoading] = useState(false);
 
@@ -15,28 +15,22 @@ const ElectionDetails = () => {
       const response = await api.get(`/elect/${id}`);
       setElection(response.data);
     } catch (err) {
-      console.error("❌ Error fetching election:", err);
+      toast.error("❌ Error fetching Elections");
     }
   };
 
   useEffect(() => {
-    // ✅ Fetch election details by ID
     fetchElection();
   }, [id]);
 
   const addVote = async (candidateId) => {
     setButtonLoading(true);
     try {
-      const response = await api.post(`/vote/${id}`, { candidateId });
+      await api.post(`/vote/${id}`, { candidateId });
       toast.success("Voted successfully");
-      // Refresh election details after voting
       await fetchElection();
     } catch (error) {
-      console.error(
-        "Error Casting Vote:",
-        error.response?.data || error.message
-      );
-      toast.error( error.response?.data.error);
+      toast.error(error.response?.data?.error || "Voting failed");
     } finally {
       setButtonLoading(false);
     }
@@ -79,45 +73,77 @@ const ElectionDetails = () => {
             {election.isActive ? (
               <span className="text-green-600 font-bold">Active</span>
             ) : (
-              <span className="text-orange-400 font-bold">InActive</span>
+              <span className="text-orange-400 font-bold">Inactive</span>
             )}
           </p>
         </div>
       </motion.div>
 
-      {/* Candidates List */}
-      <h2 className="text-3xl font-bold text-gray-800 mb-8">Candidates</h2>
-      <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-        {election.candidates.map((candidate, index) => (
-          <motion.div
-            key={candidate._id}
-            className="bg-white rounded-xl shadow-md p-6 hover:shadow-xl transition transform hover:-translate-y-2"
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.2, duration: 0.6 }}
-          >
-            <div className="flex items-center justify-between">
-              <h3 className="text-xl font-semibold text-blue-600">
-                {candidate.name}
-              </h3>
-              <span className="text-sm px-3 py-1 rounded-full bg-gray-100 text-gray-700">
-                {candidate.party}
-              </span>
-            </div>
-            <p className="mt-3 text-gray-600">Votes: {candidate.votes}</p>
-            <button
-              onClick={() => addVote(candidate._id)}
-              disabled={!election.isActive}
-              className={`mt-6 w-full py-2 rounded-lg font-semibold shadow transition ${
-                election.isActive
-                  ? "bg-blue-600 text-white hover:bg-blue-700"
-                  : "bg-gray-300 text-gray-600 cursor-not-allowed"
-              }`}
-            >
-              {election.isActive ? "Vote" : "Voting Inactive"}
-            </button>
-          </motion.div>
-        ))}
+      {/* Pie Chart + Candidates Side by Side */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        {/* Pie Chart */}
+        <motion.div
+          className="flex justify-center items-center bg-white p-6 rounded-2xl shadow-lg"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6 }}
+        >
+          <PieChart
+            series={[
+              {
+                data: election.candidates.map((candidate, index) => ({
+                  id: index,
+                  value: candidate.votes,
+                  label: candidate.name,
+                })),
+              },
+            ]}
+            width={400}
+            height={400}
+          />
+        </motion.div>
+
+        {/* Candidates List */}
+        <motion.div
+          className="bg-white p-6 rounded-2xl shadow-lg"
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <h2 className="text-3xl font-bold text-gray-800 mb-8">Candidates</h2>
+          <div className="grid gap-6">
+            {election.candidates.map((candidate, index) => (
+              <motion.div
+                key={candidate._id}
+                className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-5 flex items-center justify-between hover:shadow-lg transition transform hover:-translate-y-1"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.2, duration: 0.5 }}
+              >
+                <div>
+                  <h3 className="text-xl font-semibold text-blue-700">
+                    {candidate.name}
+                  </h3>
+                  <p className="text-gray-600">{candidate.party}</p>
+                  <p className="mt-1 text-sm text-gray-500">
+                    Votes: <span className="font-bold">{candidate.votes}</span>
+                  </p>
+                </div>
+                <button
+                  onClick={() => addVote(candidate._id)}
+                  disabled={!election.isActive || buttonLoading}
+                  className={`px-4 py-2 rounded-lg font-semibold shadow transition ${
+                    election.isActive
+                      ? "bg-blue-600 text-white hover:bg-blue-700"
+                      : "bg-gray-300 text-gray-600 cursor-not-allowed"
+                  }`}
+                >
+                  {election.isActive ? "Vote" : "Inactive"}
+                </button>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
       </div>
     </div>
   );

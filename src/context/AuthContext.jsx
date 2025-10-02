@@ -33,7 +33,6 @@ export const AuthProvider = ({ children }) => {
       toast.success("Login Successfull!!");
       navigate("/");
     } catch (err) {
-      console.error("Login failed:", err);
       toast.error("Login failed. Please check your credentials.");
     }
   };
@@ -44,7 +43,6 @@ export const AuthProvider = ({ children }) => {
       toast.success("Register Successfull!!");
       navigate("/login");
     } catch (error) {
-      console.error("Registration Failed:", error);
       toast.error("Registration failed. Please try again.!");
     }
   };

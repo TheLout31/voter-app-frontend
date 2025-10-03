@@ -1,16 +1,24 @@
-# React + Vite
+# VoteNow
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**VoteNow** is a secure and user-friendly  application for voting. It allows users to vote for candidates while ensuring account security with **multi-factor authentication (MFA)**. The app supports different user roles (user and admin) to manage voting and elections efficiently.
 
-Currently, two official plugins are available:
+## Features
+- **User Roles:** Separate access for users and admins. Users can vote; admins can manage elections and candidates.
+- **Secure Authentication:** Multi-factor authentication (MFA) and secure login to protect user accounts.
+- **Voting:** Users can cast votes for candidates in real-time.
+- **Profile Management:** Users can update their profile information and upload images/documents.
+- **Notifications:** Receive real-time updates for account activity and election results.
+- **Responsive UI:** Clean, intuitive interface built with ReactJS for seamless experience across devices.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tech Stack
+- **Front-end:** ReactJS
+- **State Management:** Redux
+- **Routing:** React Router
+- **Security:** MFA integration, JWT authentication
+- **Styling:** CSS / Styled Components
+- **API Integration:** RESTful APIs with backend (Node.js/Express)
 
-## React Compiler
-
-The React Compiler is not enabled on this template. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Installation
+1. Clone the repository:  
+   ```bash
+   git clone https://github.com/yourusername/votenow.git

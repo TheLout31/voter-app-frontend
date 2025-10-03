@@ -35,28 +35,7 @@ const LandingPage = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-50 to-white">
-      {/* Navbar */}
-      <nav className="flex items-center justify-between px-8 py-4 bg-white shadow-md sticky top-0 z-50">
-        <h1 className="text-2xl font-extrabold text-blue-600">VoteNow</h1>
-        <div className="flex items-center gap-6">
-          <Link to="/" className="text-gray-700 hover:text-blue-600 transition">
-            Home
-          </Link>
-          <Link
-            to="/about"
-            className="text-gray-700 hover:text-blue-600 transition"
-          >
-            About
-          </Link>
-          <Link
-            to="/contact"
-            className="text-gray-700 hover:text-blue-600 transition"
-          >
-            Contact
-          </Link>
-        </div>
-      </nav>
-
+    
       {/* Hero */}
       <section className="flex flex-col items-center text-center mt-20 px-6">
         <motion.h2

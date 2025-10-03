@@ -1,8 +1,8 @@
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const API_URL = "https://vote-now-backend.vercel.app";
-// const API_URL = "http://localhost:3000"
+// const API_URL = "https://vote-now-backend.vercel.app";
+const API_URL = "http://localhost:3000"
 
 // Create axios instance
 const api = axios.create({

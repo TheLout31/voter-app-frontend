@@ -19,6 +19,47 @@ export const AuthProvider = ({ children }) => {
     localStorage.getItem("refreshToken") || null
   );
 
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const handleAuthState = async () => {
+    if (!accessToken) {
+      setIsAuthenticated(false);
+      return;
+    }
+    try {
+      const decodedToken = jwtDecode(accessToken);
+      const currentTime = Date.now() / 1000;
+
+      if (decodedToken.exp < currentTime) {
+        // Token expired → try refresh
+        await refreshAccessToken();
+      } else {
+        setIsAuthenticated(true);
+      }
+    } catch (error) {
+      toast.error("Invalid token");
+      logout();
+    }
+  };
+
+  const refreshAccessToken = async () => {
+    try {
+      const response = await api.post("/auth/refresh", { refreshToken });
+      const { accessToken: newAccessToken } = response.data;
+
+      setAccessToken(newAccessToken);
+      localStorage.setItem("accessToken", newAccessToken);
+      setIsAuthenticated(true);
+    } catch (err) {
+      toast.error("Refresh failed");
+      logout();
+    }
+  };
+
+  useEffect(() => {
+    handleAuthState();
+  }, []);
+
   const login = async (email, password) => {
     try {
       const response = await api.post("/auth/login", { email, password });
@@ -59,7 +100,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, accessToken, login, register, logout }}
+      value={{ user, accessToken, login, register, logout, isAuthenticated }}
     >
       {children}
     </AuthContext.Provider>

@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+
 const API_URL = "https://vote-now-backend.vercel.app";
 // const API_URL = "http://localhost:3000"
 
@@ -35,7 +36,7 @@ api.interceptors.request.use((config) => {
 //         if (!refreshToken) {
 //           console.error("No refresh token found. User must log in again.");
 //           // Optional: redirect to login
-    
+
 //           return Promise.reject(error);
 //         }
 
